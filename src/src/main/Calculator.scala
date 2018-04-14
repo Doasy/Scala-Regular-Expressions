@@ -55,17 +55,39 @@ class Calculator {
   }
 
   private def calculate(symbol: String, n1: Float, n2: Float): Unit = {
+
+
+    val (n1String: String) = stringAsIntOrFloat(n1)
+    val (n2String: String) = stringAsIntOrFloat(n2)
     if (symbol == "+") {
-      println("Result= " + (n1 + n2))
+      val result = n1 + n2
+      val (resultString: String) = stringAsIntOrFloat(result)
+      println("La suma de %s i %s és igual a %s".format(n1String, n2String, resultString))
     } else if (symbol == "-") {
-      println("Result= " + (n1 - n2))
+      val result = n1 - n2
+      val (resultString: String) = stringAsIntOrFloat(result)
+      println("La resta de %s i %s és igual a %s".format(n1String, n2String, resultString))
     } else if (symbol == "*") {
-      println("Result= " + (n1 * n2))
+      val result = n1 * n2
+      val (resultString: String) = stringAsIntOrFloat(result)
+      println("La multiplicació de %s i %s és igual a %s".format(n1String, n2String, resultString))
     } else if (symbol == "/") {
-      println("Result= " + (n1 / n2))
+      val result = n1 / n2
+      val (resultString: String) = stringAsIntOrFloat(result)
+      println("La divisió de %s i %s és igual a %s".format(n1String, n2String, resultString))
     }
   }
 
+  private def stringAsIntOrFloat(n: Float) = {
+    var actualN: String = "0"
+    if (n == Math.round(n)) {
+      val temp = n.toInt
+      actualN = temp.toString
+    } else {
+      actualN = n.toString
+    }
+    actualN
+  }
   private def findN1N2AndSymbol(line: String) = {
     val n1Pattern = new Regex("Calc: [0-9]+(\\.[0-9]+)?")
     val symbolPattern: Regex = new Regex("[\\+|\\*|\\-|\\/]")

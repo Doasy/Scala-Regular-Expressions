@@ -1,6 +1,6 @@
 Calc: 3+6;
 a=3;
 b=5.2;
-Calc: a + 3;
-Calc: 4+a;
-Calc: a +b;
+Calc: a - 3;
+Calc: 4 * a;
+Calc: a / b;
