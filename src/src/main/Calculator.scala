@@ -14,6 +14,9 @@ class Calculator {
   val operationPatternWithVariebleInSecondPos= new Regex("Calc: [0-9]+(\\.[0-9]+)? ?" +
     "[\\+|\\*|\\-|\\/] ?" +
     "[a-z] ?;")
+  val operationPatternWithTwoVariables= new Regex("Calc: [a-z] ?" +
+    "[\\+|\\*|\\-|\\/] ?" +
+    "[a-z] ?;")
   val varPattern = new Regex("[a-z] ?\\= ?[0-9]+(\\.[0-9]+)? ?;")
 
   def matchWithRegularExpression(line: String){
@@ -25,16 +28,15 @@ class Calculator {
     }else if((operationPatternWithVariebleInFirstPos findAllIn line).mkString(",") == line){
       println("(OK)" + line)
       val (n1: Float, symbol: String, n2: Float) = findN1AndN2AndSymbolWithVariable(line, first = true)
-
       calculate(symbol, n1, n2)
-
-
     }else if((operationPatternWithVariebleInSecondPos findAllIn line).mkString(",") == line){
       println("(OK)" + line)
       val (n1: Float, symbol: String, n2: Float) = findN1AndN2AndSymbolWithVariable(line, first = false)
-
       calculate(symbol, n1, n2)
-
+    }else if((operationPatternWithTwoVariables findAllIn line).mkString(",") == line){
+      println("(OK)" + line)
+      val (symbol: String, n1: Float, n2: Float) = findN1N2AndSymbolWithTwoVariables(line)
+      calculate(symbol, n1, n2)
     }else if((varPattern findAllIn line).mkString(",") == line){
       println("(OK)" + line)
       keepVariable(line)
@@ -65,21 +67,35 @@ class Calculator {
   }
 
   private def findN1N2AndSymbol(line: String) = {
-    var n1Pattern = new Regex("Calc: [0-9]+(\\.[0-9]+)?")
-    var symbolPattern = new Regex("[\\+|\\*|\\-|\\/]")
-    var n2Pattern = new Regex("[0-9]+(\\.[0-9]+)? ?;")
+    val n1Pattern = new Regex("Calc: [0-9]+(\\.[0-9]+)?")
+    val symbolPattern: Regex = new Regex("[\\+|\\*|\\-|\\/]")
+    val n2Pattern = new Regex("[0-9]+(\\.[0-9]+)? ?;")
 
-    var n1temp = (n1Pattern findAllIn line).mkString(",")
-    var symbol = (symbolPattern findAllIn line).mkString(",")
-    var n2temp = (n2Pattern findAllIn line).mkString(",")
+    val n1temp = (n1Pattern findAllIn line).mkString(",")
+    val symbol = (symbolPattern findAllIn line).mkString(",")
+    val n2temp = (n2Pattern findAllIn line).mkString(",")
 
-    var nPattern = new Regex("[0-9]+(\\.[0-9]+)?")
+    val nPattern = new Regex("[0-9]+(\\.[0-9]+)?")
 
-    var n1 = (nPattern findAllIn n1temp).mkString(",").toFloat
-    var n2 = (nPattern findAllIn n2temp).mkString(",").toFloat
+    val n1 = (nPattern findAllIn n1temp).mkString(",").toFloat
+    val n2 = (nPattern findAllIn n2temp).mkString(",").toFloat
     (symbol, n1, n2)
   }
 
+  private def findN1N2AndSymbolWithTwoVariables(line: String) = {
+    val n1Pattern = new Regex(": [a-z]")
+    val symbolPattern = new Regex("[\\+|\\*|\\-|\\/]")
+    val n2Pattern = new Regex("[a-z] ?;")
+
+    val n1temp = (n1Pattern findAllIn line).mkString(",")
+    val symbol = (symbolPattern findAllIn line).mkString(",")
+    val n2temp = (n2Pattern findAllIn line).mkString(",")
+    val varPattern = new Regex("[a-z]")
+
+    val n1Var = (varPattern findAllIn n1temp).mkString(",")
+    val n2Var = (varPattern findAllIn n2temp).mkString(",")
+    (symbol, variables(n1Var), variables(n2Var))
+  }
   private def findN1AndN2AndSymbolWithVariable(line: String, first: Boolean) = {
     val patterWithoutCalc=  new Regex("([0-9]+(\\.[0-9]+)?|[a-z]) ?" +
       "[\\+|\\*|\\-|\\/] ?" +
