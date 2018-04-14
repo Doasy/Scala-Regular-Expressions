@@ -1,0 +1,4 @@
+Calc: 3+6;
+a=3;
+Calc: a + 3;
+Calc: 4+a;
