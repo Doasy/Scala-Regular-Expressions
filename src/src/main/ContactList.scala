@@ -16,7 +16,7 @@ class ContactList(){
     }
   }
 }
-object ContactList extends App {
+object RunContactList extends App {
   val ct = new ContactList()
 
   val filename = "/home/alba/compiladors/Scala-Regular-Expressions/src/src/docs/testContactList.txt"
